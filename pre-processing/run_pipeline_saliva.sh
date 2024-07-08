@@ -89,15 +89,39 @@ srslyumi-bamtag --binary -o $3$2"_processing/"$2"_RX.bam" --take-fragment 0 $3$2
 
 echo "___________SRSLYUMI___________"
 
+# sort bam
+module load samtools
+samtools sort -o $3$2"_processing/"$2"_sorted_RX.bam" $3$2"_processing/"$2"_RX.bam"
+
+echo "___________SORT1.33___________"
+
+# index bam
+module load samtools
+samtools index $3$2"_processing/"$2"_sorted_RX.bam"
+
+echo "___________INDEX1.33___________"
+
 # dedup UMI_tools
 module load python
-umi_tools group --output-bam --stdin=$3$2"_processing/"$2"_RX.bam" --stdout=$3$2"_processing/"$2"_BX.bam" --group-out=$3$2"_processing/"$2"_umicorrection.tsv" --extract-umi-method=tag --umi-tag=RX --method=directional --paired --unmapped-reads=use --chimeric-pairs=discard 
+umi_tools group --output-bam --stdin=$3$2"_processing/"$2"_sorted_RX.bam" --stdout=$3$2"_processing/"$2"_BX.bam" --group-out=$3$2"_processing/"$2"_umicorrection.tsv" --extract-umi-method=tag --umi-tag=RX --method=directional --paired --unmapped-reads=use --chimeric-pairs=discard 
 
 echo "___________UMITOOLS___________"
 
+# sort bam
+module load samtools
+samtools sort -o $3$2"_processing/"$2"_sorted_BX.bam" $3$2"_processing/"$2"_BX.bam"
+
+echo "___________SORT1.66___________"
+
+# index bam
+module load samtools
+samtools index $3$2"_processing/"$2"_sorted_BX.bam"
+
+echo "___________INDEX1.66___________"
+
 # dedup picard removal
 module load java
-java -jar $PICARD picard.jar MarkDuplicates -BARCODE_TAG BX -VALIDATION_STRINGENCY LENIENT -I $3$2"_processing/"$2"_BX.bam" -O $3$2"_processing/"$2"_deduped.bam" -M $3$2"_processing/"$2"_deduped.metrics.txt" -REMOVE_DUPLICATES TRUE
+java -jar $PICARD picard.jar MarkDuplicates -BARCODE_TAG BX -VALIDATION_STRINGENCY LENIENT -I $3$2"_processing/"$2"_sorted_BX.bam" -O $3$2"_processing/"$2"_deduped.bam" -M $3$2"_processing/"$2"_deduped.metrics.txt" -REMOVE_DUPLICATES TRUE
 
 echo "___________PICARD___________"
 
