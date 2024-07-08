@@ -158,3 +158,15 @@ module load bedtools
 bedtools intersect -v -abam $3$2"_processing/"$2"_nuc.bam" -b /u/home/c/choi/blacklist.bed > $3$2"_processing/"$2"_blacklisted.bam"
 
 echo "___________BLACKLIST___________"
+
+# sort bam
+module load samtools
+samtools sort -o $3$2"_processing/"$2"_sorted_blacklisted.bam" $3$2"_processing/"$2"_blacklisted.bam"
+
+echo "___________SORT_FINAL___________"
+
+# index bam
+module load samtools
+samtools index $3$2"_processing/"$2"_sorted_blacklisted.bam"
+
+echo "___________INDEX_FINAL___________"
