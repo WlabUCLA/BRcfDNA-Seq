@@ -62,18 +62,21 @@ echo "___________UNMAPPED___________"
 # convert sam to bam
 module load samtools
 samtools view -bS $3$2"_processing/"$2"_bowtie2.sam" > $3$2"_processing/"$2"_bowtie2.bam"
+samtools view -bS $3$2"_processing/"$2"_bowtie2_unmapped.sam" > $3$2"_processing/"$2"_bowtie2_unmapped.bam"
 
 echo "___________SAM2BAM___________"
 
 # sort bam
 module load samtools
 samtools sort -o $3$2"_processing/"$2"_sorted_1.bam" $3$2"_processing/"$2"_bowtie2.bam"
+samtools sort -o $3$2"_processing/"$2"_sorted_unmapped.bam" $3$2"_processing/"$2"_bowtie2_unmapped.bam"
 
 echo "___________SORT1___________"
 
 # index bam
 module load samtools
 samtools index $3$2"_processing/"$2"_sorted_1.bam"
+samtools index $3$2"_processing/"$2"_sorted_unmapped.bam"
 
 echo "___________INDEX1___________"
 
